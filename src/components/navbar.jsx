@@ -7,15 +7,11 @@ import { FiMenu, FiX } from 'react-icons/fi';
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // 🔒 Authentication Context Placeholder
   // const { user, logOut } = useContext(AuthContext);
-  const user = null; // 🔒 TEMPORARY PLACEHOLDER FOR DEMO
+  const user = null;
 
   const handleLogout = () => {
-    // 🔒 Implement logout logic when auth is ready
-    // logOut()
-    //   .then(() => {})
-    //   .catch(err => console.error(err));
+    // logOut().then(() => {}).catch(() => {});
   };
 
   const navLinks = (
@@ -23,7 +19,7 @@ const Navbar = () => {
       <NavLink
         to="/"
         className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600 px-2' : 'hover:text-blue-600 px-2'
+          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
         }
       >
         Home
@@ -31,7 +27,7 @@ const Navbar = () => {
       <NavLink
         to="/add-blog"
         className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600 px-2' : 'hover:text-blue-600 px-2'
+          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
         }
       >
         Add Blog
@@ -39,7 +35,7 @@ const Navbar = () => {
       <NavLink
         to="/all-blogs"
         className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600 px-2' : 'hover:text-blue-600 px-2'
+          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
         }
       >
         All Blogs
@@ -47,15 +43,15 @@ const Navbar = () => {
       <NavLink
         to="/featured"
         className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600 px-2' : 'hover:text-blue-600 px-2'
+          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
         }
       >
-        Featured Blogs
+        Featured
       </NavLink>
       <NavLink
         to="/wishlist"
         className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600 px-2' : 'hover:text-blue-600 px-2'
+          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
         }
       >
         Wishlist
@@ -66,15 +62,15 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-blue-700">BlogNest</Link>
+        <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-6 items-center">
+        <div className="hidden md:flex items-center justify-center gap-8">
           {navLinks}
+        </div>
 
+        <div className="hidden md:flex items-center gap-4">
           {user ? (
-            <div className="flex items-center gap-4">
-              {/* 🔒 user.photoURL can be used here */}
+            <>
               <img
                 src="https://i.ibb.co/8d8hKt3/default-avatar.png"
                 alt="Profile"
@@ -86,9 +82,9 @@ const Navbar = () => {
               >
                 Logout
               </button>
-            </div>
+            </>
           ) : (
-            <div className="flex gap-2">
+            <>
               <Link
                 to="/login"
                 className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
@@ -101,34 +97,36 @@ const Navbar = () => {
               >
                 Register
               </Link>
-            </div>
+            </>
           )}
         </div>
 
-        {/* Mobile Toggle Button */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
-          {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
+        <div className="md:hidden">
+          <button onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden px-4 pb-4 flex flex-col gap-3">
           {navLinks}
           {user ? (
-            <div className="flex items-center gap-3">
-              <img
-                src="https://i.ibb.co/8d8hKt3/default-avatar.png"
-                alt="Profile"
-                className="w-8 h-8 rounded-full"
-              />
-              <button
-                onClick={handleLogout}
-                className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-              >
-                Logout
-              </button>
-            </div>
+            <>
+              <div className="flex items-center gap-2">
+                <img
+                  src="https://i.ibb.co/8d8hKt3/default-avatar.png"
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full"
+                />
+                <button
+                  onClick={handleLogout}
+                  className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                >
+                  Logout
+                </button>
+              </div>
+            </>
           ) : (
             <>
               <Link
