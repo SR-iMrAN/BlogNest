@@ -86,13 +86,13 @@ const Navbar = () => {
           ) : (
             <>
               <Link
-                to="/login"
+                to="/auth/login"
                 className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
               >
                 Login
               </Link>
               <Link
-                to="/register"
+                to="/auth/register"
                 className="text-sm border border-blue-500 text-blue-500 px-3 py-1 rounded hover:bg-blue-50"
               >
                 Register
@@ -130,13 +130,13 @@ const Navbar = () => {
           ) : (
             <>
               <Link
-                to="/login"
+                to="/auth/login"
                 className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
               >
                 Login
               </Link>
               <Link
-                to="/register"
+                to="/auth/register"
                 className="text-sm border border-blue-500 text-blue-500 px-3 py-1 rounded hover:bg-blue-50"
               >
                 Register
