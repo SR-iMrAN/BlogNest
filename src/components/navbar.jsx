@@ -1,17 +1,14 @@
 import { NavLink, Link } from 'react-router-dom';
-import { useState } from 'react';
-import { FiMenu, FiX } from 'react-icons/fi';
-// import { useContext } from 'react';
-// import { AuthContext } from '../../context/AuthProvider';
+import { useState, useContext } from 'react';
+import { FiMenu, FiX, FiLogIn, FiUserPlus, FiLogOut } from 'react-icons/fi';
+import { AuthContext } from '../provider/AuthProvider';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // const { user, logOut } = useContext(AuthContext);
-  const user = null;
+  const { user, logOut } = useContext(AuthContext);
 
   const handleLogout = () => {
-    // logOut().then(() => {}).catch(() => {});
+    logOut().then(() => {}).catch(() => {});
   };
 
   const navLinks = (
@@ -64,7 +61,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link>
 
-        <div className="hidden md:flex items-center justify-center gap-8">
+        <div className="hidden md:flex items-center gap-8">
           {navLinks}
         </div>
 
@@ -72,14 +69,15 @@ const Navbar = () => {
           {user ? (
             <>
               <img
-                src="https://i.ibb.co/8d8hKt3/default-avatar.png"
+                src={user.photoURL || 'https://i.ibb.co/8d8hKt3/default-avatar.png'}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
               <button
                 onClick={handleLogout}
-                className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                className="flex items-center text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 gap-1"
               >
+                <FiLogOut />
                 Logout
               </button>
             </>
@@ -87,14 +85,16 @@ const Navbar = () => {
             <>
               <Link
                 to="/auth/login"
-                className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                className="flex items-center text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 gap-1"
               >
+                <FiLogIn />
                 Login
               </Link>
               <Link
                 to="/auth/register"
-                className="text-sm border border-blue-500 text-blue-500 px-3 py-1 rounded hover:bg-blue-50"
+                className="flex items-center text-sm border border-blue-500 text-blue-500 px-3 py-1 rounded hover:bg-blue-50 gap-1"
               >
+                <FiUserPlus />
                 Register
               </Link>
             </>
@@ -109,39 +109,41 @@ const Navbar = () => {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden px-4 pb-4 flex flex-col gap-3">
-          {navLinks}
+        <div className="md:hidden px-4 pb-4 flex flex-col gap-3 bg-white shadow">
+          <div className="flex flex-col gap-2">{navLinks}</div>
+
           {user ? (
-            <>
-              <div className="flex items-center gap-2">
-                <img
-                  src="https://i.ibb.co/8d8hKt3/default-avatar.png"
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-                <button
-                  onClick={handleLogout}
-                  className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                >
-                  Logout
-                </button>
-              </div>
-            </>
+            <div className="flex items-center gap-2 mt-3">
+              <img
+                src={user.photoURL || 'https://i.ibb.co/8d8hKt3/default-avatar.png'}
+                alt="Profile"
+                className="w-8 h-8 rounded-full"
+              />
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 gap-1"
+              >
+                <FiLogOut />
+                Logout
+              </button>
+            </div>
           ) : (
-            <>
+            <div className="flex gap-2 mt-3">
               <Link
                 to="/auth/login"
-                className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                className="flex items-center text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 gap-1"
               >
+                <FiLogIn />
                 Login
               </Link>
               <Link
                 to="/auth/register"
-                className="text-sm border border-blue-500 text-blue-500 px-3 py-1 rounded hover:bg-blue-50"
+                className="flex items-center text-sm border border-blue-500 text-blue-500 px-3 py-1 rounded hover:bg-blue-50 gap-1"
               >
+                <FiUserPlus />
                 Register
               </Link>
-            </>
+            </div>
           )}
         </div>
       )}
