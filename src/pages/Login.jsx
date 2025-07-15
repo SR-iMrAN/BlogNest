@@ -3,14 +3,14 @@ import { FcGoogle } from 'react-icons/fc';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../provider/AuthProvider';
-
 import { toast } from 'react-toastify';
+import { motion } from 'framer-motion';
+import { MdLock, MdEmail } from 'react-icons/md';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-
   const { signIn, setUser, signInWithGoogle } = useContext(AuthContext);
-
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -27,7 +27,6 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         setUser(user);
-
         if (from === "/") {
           Swal.fire({
             title: 'Login Successful',
@@ -40,7 +39,6 @@ const Login = () => {
             if (result.isConfirmed) {
               navigate("/", { replace: true });
             }
-            
           });
         } else {
           Swal.fire({
@@ -67,7 +65,6 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         setUser(user);
-
         if (from === "/") {
           Swal.fire({
             title: 'Login Successful',
@@ -104,16 +101,30 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr  flex items-center justify-center px-4">
-      
-      <div className="dark:bg-green-300 rounded-xl shadow-2xl flex w-full max-w-5xl overflow-hidden">
-        {/* Left: Login Form */}
-        <div className="w-full md:w-1/2 p-8">
+    <motion.div
+      className="min-h-screen bg-gradient-to-tr flex items-center justify-center px-4"
+      initial={{ opacity: 0, y: -40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
+    >
+      <motion.div
+        className="dark:bg-green-300 rounded-xl shadow-2xl flex w-full max-w-5xl overflow-hidden"
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.div
+          className="w-full md:w-1/2 p-8"
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.7 }}
+        >
           <h2 className="text-3xl font-bold my-4 text-center text-gray-800">Login!</h2>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label-text">Email Address</label>
+              <label className="label-text flex items-center gap-1">
+                <MdEmail /> Email Address
+              </label>
               <input
                 type="email"
                 name="email"
@@ -125,7 +136,9 @@ const Login = () => {
               />
             </div>
             <div>
-              <label className="label-text">Password</label>
+              <label className="label-text flex items-center gap-1">
+                <MdLock /> Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -166,18 +179,23 @@ const Login = () => {
               Register
             </Link>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right: Image/Illustration */}
-        <div
-          className="hidden md:block md:w-1/2 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://i.ibb.co/VYR5Y7gP/Flux-Dev-A-user-interacting-with-a-simple-illustrated-plant-on-3.jpg')`,
-            backgroundColor: '#fff',
-          }}
-        />
-      </div>
-    </div>
+        <motion.div
+          className="hidden md:flex md:w-1/2 items-center justify-center bg-white"
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        >
+          <DotLottieReact
+            src="https://lottie.host/0634600d-135e-4305-8fde-30fa0bcb3e41/lQ6SsuGY6q.lottie"
+            loop
+            autoplay
+            style={{ width: '90%', maxWidth: '420px' }}
+          />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 

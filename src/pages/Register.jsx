@@ -5,6 +5,8 @@ import { Link, useNavigate, useLocation } from 'react-router';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../provider/AuthProvider';
 import { toast } from 'react-toastify';
+import { motion } from 'framer-motion';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -64,7 +66,7 @@ const Register = () => {
           navigate('/', { replace: true });
         }
       });
-    }, 100); 
+    }, 100);
   };
 
   const handleSubmit = (e) => {
@@ -139,9 +141,13 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen text-base-content flex items-center justify-center px-4">
+    <motion.div
+      className="min-h-screen text-base-content flex items-center justify-center px-4"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
       <div className="bg-green-300 rounded-xl shadow-2xl flex w-full max-w-4xl overflow-hidden">
-        {/* Left Form */}
         <div className="w-full md:w-1/2 p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Create Account</h2>
 
@@ -208,7 +214,10 @@ const Register = () => {
 
           <div className="divider">or sign up with</div>
 
-          <button onClick={handleGoogleSignUp} className="btn btn-outline w-full flex items-center text-base-content gap-2">
+          <button
+            onClick={handleGoogleSignUp}
+            className="btn btn-outline w-full flex items-center text-base-content gap-2"
+          >
             <FcGoogle className="text-xl text-base-content" />
             Continue with Google
           </button>
@@ -221,15 +230,16 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Right Image */}
-        <div
-          className="hidden md:block md:w-1/2 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://i.ibb.co/tMRr4Lcd/Flux-Dev-A-user-interacting-with-a-simple-illustrated-plant-on-2.jpg')`,
-          }}
-        ></div>
+        <div className="hidden md:flex md:w-1/2 items-center justify-center bg-white p-8">
+          <DotLottieReact
+            src="https://lottie.host/bf35ca19-2de8-4162-a831-d0ab3e330827/xOjK2ANOKt.lottie"
+            loop
+            autoplay
+            style={{ width: '100%', maxWidth: 400 }}
+          />
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
