@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,16 +10,28 @@ import {
   FaTwitter,
   FaLinkedinIn,
   FaInstagram,
+  FaPlusCircle, 
 } from 'react-icons/fa';
 import { MdCampaign } from 'react-icons/md';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Home = () => {
+  const [blogs, setBlogs] = useState([]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    fetch('http://localhost:3007/blogs') 
+      .then(res => res.json())
+      .then(data => setBlogs(data))
+      .catch(err => {
+        console.error('Failed to fetch blogs:', err);
+        setBlogs([]);
+      });
   }, []);
 
   const handleSubscribe = (e) => {
@@ -49,32 +61,61 @@ const Home = () => {
 
       {/* Recent Blogs */}
       <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="max-w-6xl mx-auto px-4"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-6">Recent Blogs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((id) => (
-            <div key={id} className="border p-4 rounded-lg shadow-sm">
-              <img src={`https://source.unsplash.com/400x250/?blog,tech,${id}`} alt="Blog" className="rounded-md mb-3" />
-              <h3 className="text-lg font-bold">Sample Blog Title {id}</h3>
-              <p className="text-sm text-gray-600 mt-1">This is a short description of the blog post...</p>
-              <div className="flex justify-between items-center mt-3">
-                <Link
-                  to={`/blog/${id}`}
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  Details
-                </Link>
-                <button className="text-sm bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200">Wishlist</button>
-              </div>
-            </div>
-          ))}
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+  viewport={{ once: true }}
+  className="max-w-6xl mx-auto px-4"
+>
+  <h2 className="text-2xl font-semibold text-center mb-6">Recent Blogs</h2>
+
+  {blogs.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {blogs.map((blog, index) => (
+        <div key={blog._id || index} className="border p-4 rounded-lg shadow-sm">
+          <img
+            src={blog.image || `https://source.unsplash.com/400x250/?blog,tech,${index}`}
+            alt="Blog"
+            className="rounded-md mb-3"
+          />
+          <h3 className="text-lg font-bold">{blog.title}</h3>
+          <p className="text-sm text-gray-600 mt-1">
+            {blog.description?.slice(0, 100) || 'No description'}...
+          </p>
+          <div className="flex justify-between items-center mt-3">
+            <Link
+              to={`/blog/${blog._id}`}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Details
+            </Link>
+            <button className="text-sm bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200">
+              Wishlist
+            </button>
+          </div>
         </div>
-      </motion.section>
+      ))}
+    </div>
+  ) : (
+    <div className="text-center">
+      <div className="flex justify-center">
+        <DotLottieReact
+          src="https://lottie.host/fa88d5f9-0d5c-43c6-bf2b-1a32e88c1700/BUB9irFCsJ.lottie"
+          loop
+          autoplay
+          style={{ width: '300px', height: '300px' }}
+        />
+      </div>
+      <p className="text-gray-500 mt-4 mb-4">No blogs found.</p>
+      <Link
+        to="/add-blog"
+        className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+      >
+        <FaPlusCircle /> Add Blog
+      </Link>
+    </div>
+  )}
+</motion.section>
 
       {/* Newsletter */}
       <motion.section
@@ -141,7 +182,6 @@ const Home = () => {
         viewport={{ once: true }}
         className="bg-blue-50 py-16 px-4"
       >
-        {/* Community Join CTA */}
         <div className="text-center mb-10">
           <h2 className="text-2xl font-semibold mb-2 flex justify-center items-center gap-2">
             <FaUserFriends /> Join Our Blogging Community
