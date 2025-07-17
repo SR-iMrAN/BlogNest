@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
 import app from './../firebase/firebase.config';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,6 +7,8 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 import axios from 'axios';
 
@@ -19,7 +20,30 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Auth Functions
+  // ✅ Create a secure axios instance with interceptor
+  const axiosSecure = axios.create({
+    baseURL: 'http://localhost:3007', // replace with your backend URL
+  });
+
+  useEffect(() => {
+    const requestInterceptor = axiosSecure.interceptors.request.use(
+      async (config) => {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const token = await currentUser.getIdToken();
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    return () => {
+      axiosSecure.interceptors.request.eject(requestInterceptor);
+    };
+  }, []);
+
+  // ✅ Auth Functions
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
@@ -42,34 +66,14 @@ const AuthProvider = ({ children }) => {
   };
 
   const logOut = () => {
-    localStorage.removeItem('access-token');
     return signOut(auth);
   };
 
-  // onAuthStateChanged with JWT Token Fetch
+  // ✅ Monitor user login/logout
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       setLoading(false);
-
-      if (currentUser) {
-        try {
-          const token = await currentUser.getIdToken();
-
-          const response = await axios.post(
-            'http://localhost:3007/jwt',
-            { email: currentUser.email },
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-
-          localStorage.setItem('access-token', response.data.token);
-        } catch (error) {
-          console.error('JWT fetch error:', error);
-          localStorage.removeItem('access-token');
-        }
-      } else {
-        localStorage.removeItem('access-token');
-      }
     });
 
     return () => unsubscribe();
@@ -84,6 +88,7 @@ const AuthProvider = ({ children }) => {
     logOut,
     updateUser,
     signInWithGoogle,
+    axiosSecure, // ✅ exported so you can use it anywhere securely
   };
 
   return (

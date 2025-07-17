@@ -18,21 +18,57 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import app from './../firebase/firebase.config';
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
+const auth = getAuth(app);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
+  //   fetch('http://localhost:3007/blogs') 
+  //     .then(res => res.json())
+  //     .then(data => setBlogs(data))
+  //     .catch(err => {
+  //       console.error('Failed to fetch blogs:', err);
+  //       setBlogs([]);
+  //     });
+  // }, []);
 
-    fetch('http://localhost:3007/blogs') 
-      .then(res => res.json())
-      .then(data => setBlogs(data))
-      .catch(err => {
+useEffect(() => {
+  window.scrollTo(0, 0);
+
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const token = await user.getIdToken();
+
+        const res = await fetch('http://localhost:3007/blogs', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error('Unauthorized');
+
+        const data = await res.json();
+        setBlogs(data);
+      } catch (err) {
         console.error('Failed to fetch blogs:', err);
         setBlogs([]);
-      });
-  }, []);
+      }
+    } else {
+      console.warn('User not authenticated. Skipping blog fetch.');
+      setBlogs([]);
+    }
+  });
+
+  return () => unsubscribe(); // clean up
+}, []);
+
+
+
+
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -74,7 +110,7 @@ const Home = () => {
       {blogs.map((blog, index) => (
         <div key={blog._id || index} className="border p-4 rounded-lg shadow-sm">
           <img
-            src={blog.image || `https://source.unsplash.com/400x250/?blog,tech,${index}`}
+            src={blog.image || `https://source.unsplash.com/400x250/?b log,tech,${index}`}
             alt="Blog"
             className="rounded-md mb-3"
           />
