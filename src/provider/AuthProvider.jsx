@@ -20,17 +20,19 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Create a secure axios instance with interceptor
+  // ✅ Create axios instance
   const axiosSecure = axios.create({
-    baseURL: 'http://localhost:3007', // replace with your backend URL
+    baseURL: 'http://localhost:3004', // Change to your deployed URL if needed
   });
 
+  // ✅ Attach token via Axios Interceptor
   useEffect(() => {
+    if (!user) return; 
     const requestInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const currentUser = auth.currentUser;
         if (currentUser) {
-          const token = await currentUser.getIdToken();
+          const token = await currentUser.getIdToken(true); // 🔁 Force refresh token
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -41,9 +43,9 @@ const AuthProvider = ({ children }) => {
     return () => {
       axiosSecure.interceptors.request.eject(requestInterceptor);
     };
-  }, []);
+  }, [user]);
 
-  // ✅ Auth Functions
+  // ✅ Firebase Auth Functions
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
@@ -69,9 +71,9 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  // ✅ Monitor user login/logout
+  // ✅ Monitor Auth State
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
@@ -79,6 +81,7 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  // ✅ Provide Auth Context
   const authData = {
     user,
     loading,
@@ -88,7 +91,7 @@ const AuthProvider = ({ children }) => {
     logOut,
     updateUser,
     signInWithGoogle,
-    axiosSecure, // ✅ exported so you can use it anywhere securely
+    axiosSecure,
   };
 
   return (

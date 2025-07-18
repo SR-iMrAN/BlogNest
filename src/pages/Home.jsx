@@ -10,7 +10,7 @@ import {
   FaTwitter,
   FaLinkedinIn,
   FaInstagram,
-  FaPlusCircle, 
+  FaPlusCircle,
 } from 'react-icons/fa';
 import { MdCampaign } from 'react-icons/md';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -20,55 +20,84 @@ import 'swiper/css/pagination';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import app from './../firebase/firebase.config';
+
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
-const auth = getAuth(app);
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
+  const [user, setUser] = useState(null);
+  const auth = getAuth(app);
 
-  //   fetch('http://localhost:3007/blogs') 
-  //     .then(res => res.json())
-  //     .then(data => setBlogs(data))
-  //     .catch(err => {
-  //       console.error('Failed to fetch blogs:', err);
-  //       setBlogs([]);
-  //     });
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
 
-useEffect(() => {
-  window.scrollTo(0, 0);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
 
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      try {
+    return () => unsubscribe();
+  }, [auth]);
+
+  useEffect(() => {
+  const fetchBlogs = async () => {
+    try {
+      let headers = {};
+
+      if (user) {
         const token = await user.getIdToken();
-
-        const res = await fetch('http://localhost:3007/blogs', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) throw new Error('Unauthorized');
-
-        const data = await res.json();
-        setBlogs(data);
-      } catch (err) {
-        console.error('Failed to fetch blogs:', err);
-        setBlogs([]);
+        headers.Authorization = `Bearer ${token}`;
       }
-    } else {
-      console.warn('User not authenticated. Skipping blog fetch.');
+
+      const res = await fetch('http://localhost:3004/blogs', {
+        headers,
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch blogs');
+
+      const data = await res.json();
+      setBlogs(data);
+    } catch (err) {
+      console.error('Failed to fetch blogs:', err);
       setBlogs([]);
     }
-  });
+  };
 
-  return () => unsubscribe(); 
-}, []);
-
-
+  fetchBlogs(); 
+}, [user]);
 
 
+  const handleAddToWishlist = async (blog) => {
+    if (!user) {
+      toast.error('You must be logged in to add to wishlist.');
+      return;
+    }
+
+    try {
+      const token = await user.getIdToken();
+
+      const res = await fetch('http://localhost:3004/wishlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userEmail: user.email,
+          blogId: blog._id,
+          title: blog.title,
+          author: blog.author || 'Unknown',
+          category: blog.category || 'Uncategorized',
+          date: blog.date || new Date().toISOString(),
+          image: blog.image || '',
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to add to wishlist');
+
+      toast.success('Added to wishlist');
+    } catch (error) {
+      console.error('Wishlist error:', error);
+      toast.error('Failed to add to wishlist might be already in wishlist.');
+    }
+  };
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -78,7 +107,6 @@ useEffect(() => {
 
   return (
     <div className="space-y-20">
-
       {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
@@ -96,72 +124,67 @@ useEffect(() => {
       </motion.section>
 
       {/* Recent Blogs */}
-{/* Recent Blogs */}
-<motion.section
-  initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6 }}
-  viewport={{ once: true }}
-  className="max-w-6xl mx-auto px-4"
->
-  <h2 className="text-2xl font-semibold text-center mb-6">Recent Blogs</h2>
-
-  {blogs.length > 0 ? (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {blogs.map((blog, index) => (
-        <div
-          key={blog._id || index}
-          className="border p-4 rounded-xl shadow-md bg-white flex flex-col justify-between"
-        >
-          <img
-            src={blog.image || `https://source.unsplash.com/400x250/?blog,tech,${index}`}
-            alt="Blog"
-            className="rounded-md mb-3 h-48 w-full object-cover"
-          />
-          <div>
-            <h3 className="text-lg font-bold">{blog.title}</h3>
-            <p className="text-sm text-gray-600 mt-1">
-              {blog.description?.slice(0, 100) || 'No description'}...
-            </p>
-          </div>
-          <div className="flex justify-between items-center mt-4">
-            <Link
-              to={`/blog/${blog._id}`}
-              className="btn btn-info btn-sm text-white flex items-center gap-1"
-            >
-              <FaRegLightbulb /> Details
-            </Link>
-            <button
-              onClick={() => toast.success('Added to wishlist')}
-              className="btn btn-outline btn-sm btn-warning flex items-center gap-1"
-            >
-              <FaPlusCircle /> Wishlist
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="text-center">
-      <div className="flex justify-center">
-        <DotLottieReact
-          src="https://lottie.host/fa88d5f9-0d5c-43c6-bf2b-1a32e88c1700/BUB9irFCsJ.lottie"
-          loop
-          autoplay
-          style={{ width: '300px', height: '300px' }}
-        />
-      </div>
-      <p className="text-gray-500 mt-4 mb-4">No blogs found.</p>
-      <Link
-        to="/add-blog"
-        className="btn btn-primary gap-2"
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="max-w-6xl mx-auto px-4"
       >
-        <FaPlusCircle /> Add Blog
-      </Link>
-    </div>
-  )}
-</motion.section>
+        <h2 className="text-2xl font-semibold text-center mb-6">Recent Blogs</h2>
 
+        {blogs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {blogs.map((blog, index) => (
+              <div
+                key={blog._id || index}
+                className="border p-4 rounded-xl shadow-md bg-white flex flex-col justify-between"
+              >
+                <img
+                  src={blog.image || `https://source.unsplash.com/400x250/?blog,tech,${index}`}
+                  alt="Blog"
+                  className="rounded-md mb-3 h-48 w-full object-cover"
+                />
+                <div>
+                  <h3 className="text-lg font-bold">{blog.title}</h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {blog.description?.slice(0, 100) || 'No description'}...
+                  </p>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <Link
+                    to={`/blog/${blog._id}`}
+                    className="btn btn-info btn-sm text-white flex items-center gap-1"
+                  >
+                    <FaRegLightbulb /> Details
+                  </Link>
+                  <button
+                    onClick={() => handleAddToWishlist(blog)}
+                    className="btn btn-outline btn-sm btn-warning flex items-center gap-1"
+                  >
+                    <FaPlusCircle /> Wishlist
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center">
+            <div className="flex justify-center">
+              <DotLottieReact
+                src="https://lottie.host/fa88d5f9-0d5c-43c6-bf2b-1a32e88c1700/BUB9irFCsJ.lottie"
+                loop
+                autoplay
+                style={{ width: '300px', height: '300px' }}
+              />
+            </div>
+            <p className="text-gray-500 mt-4 mb-4">No blogs found.</p>
+            <Link to="/add-blog" className="btn btn-primary gap-2">
+              <FaPlusCircle /> Add Blog
+            </Link>
+          </div>
+        )}
+      </motion.section>
 
       {/* Newsletter */}
       <motion.section
