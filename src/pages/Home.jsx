@@ -63,7 +63,7 @@ useEffect(() => {
     }
   });
 
-  return () => unsubscribe(); // clean up
+  return () => unsubscribe(); 
 }, []);
 
 
@@ -96,7 +96,8 @@ useEffect(() => {
       </motion.section>
 
       {/* Recent Blogs */}
-      <motion.section
+{/* Recent Blogs */}
+<motion.section
   initial={{ opacity: 0, y: 30 }}
   whileInView={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.6 }}
@@ -108,25 +109,33 @@ useEffect(() => {
   {blogs.length > 0 ? (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {blogs.map((blog, index) => (
-        <div key={blog._id || index} className="border p-4 rounded-lg shadow-sm">
+        <div
+          key={blog._id || index}
+          className="border p-4 rounded-xl shadow-md bg-white flex flex-col justify-between"
+        >
           <img
-            src={blog.image || `https://source.unsplash.com/400x250/?b log,tech,${index}`}
+            src={blog.image || `https://source.unsplash.com/400x250/?blog,tech,${index}`}
             alt="Blog"
-            className="rounded-md mb-3"
+            className="rounded-md mb-3 h-48 w-full object-cover"
           />
-          <h3 className="text-lg font-bold">{blog.title}</h3>
-          <p className="text-sm text-gray-600 mt-1">
-            {blog.description?.slice(0, 100) || 'No description'}...
-          </p>
-          <div className="flex justify-between items-center mt-3">
+          <div>
+            <h3 className="text-lg font-bold">{blog.title}</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              {blog.description?.slice(0, 100) || 'No description'}...
+            </p>
+          </div>
+          <div className="flex justify-between items-center mt-4">
             <Link
               to={`/blog/${blog._id}`}
-              className="text-blue-600 hover:underline text-sm"
+              className="btn btn-info btn-sm text-white flex items-center gap-1"
             >
-              Details
+              <FaRegLightbulb /> Details
             </Link>
-            <button className="text-sm bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200">
-              Wishlist
+            <button
+              onClick={() => toast.success('Added to wishlist')}
+              className="btn btn-outline btn-sm btn-warning flex items-center gap-1"
+            >
+              <FaPlusCircle /> Wishlist
             </button>
           </div>
         </div>
@@ -145,13 +154,14 @@ useEffect(() => {
       <p className="text-gray-500 mt-4 mb-4">No blogs found.</p>
       <Link
         to="/add-blog"
-        className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        className="btn btn-primary gap-2"
       >
         <FaPlusCircle /> Add Blog
       </Link>
     </div>
   )}
 </motion.section>
+
 
       {/* Newsletter */}
       <motion.section
