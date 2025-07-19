@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../provider/AuthProvider';
 import { FaPaperPlane, FaEdit, FaHome } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -10,6 +11,8 @@ const BlogDetails = () => {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
   const navigate = useNavigate();
+
+  const isBlogOwner = user && blog?.userEmail === user.email;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +24,7 @@ const BlogDetails = () => {
         setComments(commentRes.data);
       } catch (error) {
         console.error('Error loading data:', error);
+        toast.error('Failed to load blog or comments');
       }
     };
 
@@ -28,7 +32,10 @@ const BlogDetails = () => {
   }, [axiosSecure, id]);
 
   const handleComment = async () => {
-    if (!comment.trim()) return;
+    if (!comment.trim()) {
+      toast.error('Comment cannot be empty');
+      return;
+    }
 
     const commentData = {
       blogId: id,
@@ -44,13 +51,13 @@ const BlogDetails = () => {
       if (res.data.insertedId) {
         setComments([...comments, commentData]);
         setComment('');
+        toast.success('Comment posted');
       }
     } catch (error) {
       console.error('Comment post failed:', error);
+      toast.error('Failed to post comment');
     }
   };
-
-  const isBlogOwner = blog?.userEmail === user?.email;
 
   if (!blog) {
     return (
@@ -74,7 +81,7 @@ const BlogDetails = () => {
         <p className="text-gray-600">{new Date(blog.date).toLocaleString()}</p>
         <p className="text-base text-gray-800">{blog.description}</p>
 
-        {isBlogOwner && (
+        {user && isBlogOwner && (
           <button
             onClick={() => navigate(`/update/${blog._id}`)}
             className="btn btn-outline btn-primary mt-4 flex items-center gap-2"
@@ -87,8 +94,12 @@ const BlogDetails = () => {
       <div className="bg-base-100 mt-10 p-6 rounded-xl shadow">
         <h3 className="text-xl font-semibold mb-4">Comments</h3>
 
-        {isBlogOwner ? (
-          <p className="text-warning">You cannot comment on your own blog.</p>
+        {!user ? (
+          <p className="text-error">Please log in to comment.</p>
+        ) : isBlogOwner ? (
+          <div className="p-4 bg-yellow-100 text-yellow-800 rounded-lg">
+            <p><strong>Note:</strong> You cannot comment on your own blog.</p>
+          </div>
         ) : (
           <div className="space-y-4">
             <textarea

@@ -31,7 +31,7 @@ const AddBlog = () => {
       const token = await user.getIdToken();
 
       // Send POST request to backend
-      const response = await axios.post("http://localhost:3003/blogs", data, {
+      const response = await axios.post("http://localhost:3004/blogs", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
