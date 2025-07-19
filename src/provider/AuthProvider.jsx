@@ -27,12 +27,12 @@ const AuthProvider = ({ children }) => {
 
   // ✅ Attach token via Axios Interceptor
   useEffect(() => {
-    if (!user) return; 
+    // if (!user) return; 
     const requestInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         const currentUser = auth.currentUser;
         if (currentUser) {
-          const token = await currentUser.getIdToken(true); // 🔁 Force refresh token
+          const token = await currentUser.getIdToken(true); 
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -44,6 +44,7 @@ const AuthProvider = ({ children }) => {
       axiosSecure.interceptors.request.eject(requestInterceptor);
     };
   }, [user]);
+  // 
 
   // ✅ Firebase Auth Functions
   const createUser = (email, password) => {
