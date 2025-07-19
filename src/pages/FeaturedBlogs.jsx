@@ -1,7 +1,18 @@
 import { useEffect, useMemo, useState, useContext } from 'react';
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from '@tanstack/react-table';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  flexRender,
+} from '@tanstack/react-table';
 import { AuthContext } from '../provider/AuthProvider';
-import { FaSort, FaSortUp, FaSortDown, FaCrown, FaHome } from 'react-icons/fa';
+import {
+  FaSort,
+  FaSortUp,
+  FaSortDown,
+  FaCrown,
+  FaHome,
+} from 'react-icons/fa';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Link } from 'react-router-dom';
 
@@ -12,12 +23,13 @@ const FeaturedBlogs = () => {
   const [sorting, setSorting] = useState([]);
 
   useEffect(() => {
-    axiosSecure.get('/blogs')
-      .then(res => {
+    axiosSecure
+      .get('/blogs')
+      .then((res) => {
         const sorted = res.data
-          .map(blog => ({
+          .map((blog) => ({
             ...blog,
-            wordCount: blog?.long_description?.split(/\s+/).length || 0
+            wordCount: blog?.longDesc?.split(/\s+/).length || 0,
           }))
           .sort((a, b) => b.wordCount - a.wordCount)
           .slice(0, 10);
@@ -25,36 +37,65 @@ const FeaturedBlogs = () => {
         setBlogs(sorted);
         setIsLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setIsLoading(false);
       });
   }, [axiosSecure]);
 
-  const columns = useMemo(() => [
-    {
-      header: '#',
-      accessorFn: (_row, i) => i + 1,
-      id: 'index',
-      cell: info => info.getValue()
-    },
-    {
-      header: 'Title',
-      accessorKey: 'title',
-    },
-    {
-      header: 'Category',
-      accessorKey: 'category',
-    },
-    {
-      header: 'Author',
-      accessorKey: 'authorName',
-    },
-    {
-      header: 'Word Count',
-      accessorKey: 'wordCount',
-    }
-  ], []);
+  const columns = useMemo(
+    () => [
+      {
+        header: '#',
+        accessorFn: (_row, i) => i + 1,
+        id: 'index',
+        cell: (info) => info.getValue(),
+      },
+      {
+        header: 'Title',
+        accessorKey: 'title',
+        cell: (info) => (
+          <span className="font-medium">{info.getValue()}</span>
+        ),
+      },
+      {
+        header: 'Category',
+        accessorKey: 'category',
+        cell: (info) => (
+          <span className="badge badge-accent">{info.getValue()}</span>
+        ),
+      },
+      {
+        header: 'Short Description',
+        accessorKey: 'shortDesc',
+        cell: (info) => (
+          <span className="text-sm text-gray-600">
+            {info.getValue()?.slice(0, 40)}...
+          </span>
+        ),
+      },
+      {
+        header: 'Word Count',
+        accessorFn: (row) => row?.longDesc?.split(/\s+/).length || 0,
+        id: 'wordCount',
+        cell: (info) => (
+          <span className="text-blue-600 font-semibold">
+            {info.getValue()}
+          </span>
+        ),
+      },
+      {
+        header: 'Preview',
+        accessorKey: 'longDesc',
+        cell: (info) => (
+          <span className="text-sm text-gray-500">
+            {info.getValue()?.slice(0, 50)}...
+          </span>
+        ),
+      },
+    ],
+    []
+  );
 
   const table = useReactTable({
     data: blogs,
@@ -92,9 +133,9 @@ const FeaturedBlogs = () => {
       <div className="overflow-x-auto rounded-xl shadow">
         <table className="table w-full">
           <thead className="bg-base-200 text-base font-semibold">
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
+                {headerGroup.headers.map((header) => {
                   const isSorted = header.column.getIsSorted();
                   return (
                     <th
@@ -102,9 +143,18 @@ const FeaturedBlogs = () => {
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer select-none"
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                       <span className="ml-1 inline-block">
-                        {isSorted === 'asc' ? <FaSortUp /> : isSorted === 'desc' ? <FaSortDown /> : <FaSort />}
+                        {isSorted === 'asc' ? (
+                          <FaSortUp />
+                        ) : isSorted === 'desc' ? (
+                          <FaSortDown />
+                        ) : (
+                          <FaSort />
+                        )}
                       </span>
                     </th>
                   );
@@ -114,11 +164,14 @@ const FeaturedBlogs = () => {
           </thead>
 
           <tbody>
-            {table.getRowModel().rows.map(row => (
+            {table.getRowModel().rows.map((row) => (
               <tr key={row.id}>
-                {row.getVisibleCells().map(cell => (
+                {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
                   </td>
                 ))}
               </tr>
@@ -128,7 +181,10 @@ const FeaturedBlogs = () => {
       </div>
 
       <div className="mt-6 text-center">
-        <Link to="/" className="btn btn-outline btn-primary flex items-center gap-2">
+        <Link
+          to="/"
+          className="btn btn-outline btn-primary flex items-center gap-2"
+        >
           <FaHome /> Back to Home
         </Link>
       </div>
