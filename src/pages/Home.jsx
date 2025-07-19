@@ -46,7 +46,7 @@ const Home = () => {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const res = await fetch('http://localhost:3004/blogs', {
+      const res = await fetch('http://localhost:3003/blogs', {
         headers,
       });
 
@@ -73,7 +73,7 @@ const Home = () => {
     try {
       const token = await user.getIdToken();
 
-      const res = await fetch('http://localhost:3004/wishlist', {
+      const res = await fetch('http://localhost:3003/wishlist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

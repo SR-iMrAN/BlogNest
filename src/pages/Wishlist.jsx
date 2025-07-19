@@ -102,7 +102,7 @@ const { user, loading, axiosSecure } = useContext(AuthContext);
   // ✅ Loading state
   if (loading) {
     return (
-      <div className="text-center mt-10 text-gray-600 text-lg">Loading...</div>
+      <div className="text-center mt-10 text-gray-600 text-lg">Loading...<span className="loading loading-ring loading-lg"></span></div>
     );
   }
 
