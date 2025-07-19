@@ -109,19 +109,35 @@ const Home = () => {
     <div className="space-y-20">
       {/* Hero Section */}
       <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="bg-blue-50 py-16 px-4 text-center"
-      >
-        <h1 className="text-4xl md:text-5xl font-bold text-blue-700 mb-4 flex items-center justify-center gap-2">
-          <MdCampaign /> Welcome to BlogNest
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Where ideas hatch and inspire. Discover, write, and share your thoughts freely.
-        </p>
-      </motion.section>
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+  viewport={{ once: true }}
+  className="bg-blue-50 py-16 px-4"
+>
+  <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center">
+    {/* Left side Lottie animation */}
+    <div className="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
+      <DotLottieReact
+        src="https://lottie.host/43cd62ad-d59b-4d03-b075-7ed99cc08091/drK9RICI4Q.lottie"
+        loop
+        autoplay
+        style={{ width: '300px', height: '300px' }}
+      />
+    </div>
+
+    {/* Right side texts - centered vertically and horizontally */}
+    <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-center md:text-left md:items-start px-4">
+      <h1 className="text-4xl md:text-5xl font-bold text-blue-700 mb-4 flex items-center  whitespace-nowrap gap-2">
+        <MdCampaign /> Welcome to BlogNest
+      </h1>
+      <p className="text-gray-600 max-w-md">
+        Where ideas hatch and inspire. Discover, write, and share your thoughts freely.
+      </p>
+    </div>
+  </div>
+</motion.section>
+
 
       {/* Recent Blogs */}
       <motion.section
