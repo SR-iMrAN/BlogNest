@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
 
   // ✅ Create axios instance
   const axiosSecure = axios.create({
-    baseURL: 'http://localhost:3004', // Change to your deployed URL if needed
+    baseURL: 'https://blog-nest-server-two.vercel.app', // Change to your deployed URL if needed
   });
 
   // ✅ Attach token via Axios Interceptor

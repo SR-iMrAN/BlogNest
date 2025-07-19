@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, AuthContext } from '../provider/AuthProvider';
+import { AuthContext } from '../provider/AuthProvider';
 import { FaHome, FaTrash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -13,22 +12,18 @@ import {
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Wishlist = () => {
-//   const [user, loading] = useAuthState(auth);
-//   const { axiosSecure } = useContext(AuthContext);
-const { user, loading, axiosSecure } = useContext(AuthContext);
+  const { user, loading, axiosSecure } = useContext(AuthContext);
 
   const [wishlist, setWishlist] = useState([]);
   const [sorting, setSorting] = useState([]);
 
-  // ✅ Fetch wishlist
+  // Fetch wishlist with enriched blog data
   useEffect(() => {
     const fetchWishlist = async () => {
       if (user) {
         try {
-        //   const res = await axiosSecure.get(`http://localhost:3002/wishlist?email=${user.email}`);
-        const res = await axiosSecure.get(`/wishlist?email=${user.email}`);
-  
-        setWishlist(res.data);
+          const res = await axiosSecure.get(`/wishlist?email=${user.email}`);
+          setWishlist(res.data);
         } catch (error) {
           console.error('Failed to fetch wishlist:', error);
         }
@@ -38,75 +33,63 @@ const { user, loading, axiosSecure } = useContext(AuthContext);
     fetchWishlist();
   }, [user, axiosSecure]);
 
-  // ✅ Remove from wishlist
-  const handleRemove = async (id) => {
+  // Remove item from wishlist
+  const handleRemove = async (wishlistId) => {
     try {
-   const res = await axiosSecure.delete(`/wishlist/${id}`);
-        //   const res = await axiosSecure.delete(`http://localhost:3002/wishlist/${id}`);
+      const res = await axiosSecure.delete(`/wishlist/${wishlistId}`);
       if (res.data.deletedCount > 0) {
-        setWishlist((prev) => prev.filter((item) => item._id !== id));
+        setWishlist((prev) => prev.filter((item) => item.wishlistId !== wishlistId));
         Swal.fire('Deleted!', 'Blog removed from wishlist.', 'success');
       }
     } catch (error) {
       console.error('Delete error:', error);
+      Swal.fire('Error', 'Failed to remove from wishlist.', 'error');
     }
   };
 
-  // ✅ Define table columns
-  const columns = useMemo(
-    () => [
-      {
-        header: 'Title',
-        accessorKey: 'title',
-      },
-      {
-        header: 'Author',
-        accessorKey: 'author',
-      },
-      {
-        header: 'Category',
-        accessorKey: 'category',
-      },
-      {
-        header: 'Date',
-        accessorKey: 'date',
-      },
-      {
-        header: 'Actions',
-        accessorKey: '_id',
-        cell: ({ row }) => (
+  // Table columns
+  const columns = useMemo(() => [
+    { header: 'Title', accessorKey: 'title' },
+    { header: 'Author', accessorKey: 'author' },
+    { header: 'Category', accessorKey: 'category' },
+    { header: 'Date', accessorKey: 'date' },
+    {
+      header: 'Actions',
+      accessorKey: 'wishlistId',
+      cell: ({ row }) => (
+        <div className="flex gap-2">
+          <Link to={`/blog/${row.original.blogId}`} className="btn btn-sm btn-secondary">
+            Details
+          </Link>
           <button
             onClick={() => handleRemove(row.original._id)}
-            className="text-red-600 hover:text-red-800"
+            className="btn btn-sm btn-outline btn-error flex items-center gap-1"
           >
             <FaTrash />
           </button>
-        ),
-      },
-    ],
-    []
-  );
+        </div>
+      ),
+    },
+  ], []);
 
-  // ✅ Create table instance
+  // Create table instance
   const table = useReactTable({
     data: wishlist,
     columns,
-    state: {
-      sorting,
-    },
+    state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // ✅ Loading state
   if (loading) {
     return (
-      <div className="text-center mt-10 text-gray-600 text-lg">Loading...<span className="loading loading-ring loading-lg"></span></div>
+      <div className="text-center mt-10 text-gray-600 text-lg">
+        Loading... <span className="loading loading-ring loading-lg"></span>
+      </div>
     );
   }
 
-  // ✅ Not logged in
   if (!user) {
     return (
       <div className="text-center mt-10 text-gray-500">
@@ -115,7 +98,6 @@ const { user, loading, axiosSecure } = useContext(AuthContext);
     );
   }
 
-  // ✅ Empty wishlist
   if (!wishlist.length) {
     return (
       <div className="text-center mt-10">
@@ -135,7 +117,6 @@ const { user, loading, axiosSecure } = useContext(AuthContext);
     );
   }
 
-  // ✅ Table display
   return (
     <div className="p-6">
       <h2 className="text-3xl font-bold mb-6 text-center">Your Wishlist</h2>

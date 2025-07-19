@@ -1,12 +1,38 @@
-# React + Vite
+# Blog Nest – Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **Blog Nest**, a modern full-stack blogging platform where users can read, write, and interact with blog content. This is the **Frontend (Client)** repository, built using **React**, **Tailwind CSS**, **DaisyUI**, and **Firebase Authentication**.
 
-Currently, two official plugins are available:
+### 🌐 Live Site
+👉 [Visit Blog Nest](https://blog-nests.web.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🔐 Firebase Authentication (Login, Register, Google Sign-in)
+- 📃 Browse and read blogs with full details
+- 📝 Authenticated users can add blogs
+- 🎯 Categorized blog filtering
+- ❤️ Wishlist system (Save your favorite blogs)
+- 💬 Commenting system with restrictions (cannot comment on own blog)
+- 📱 Responsive design using Tailwind CSS and DaisyUI
+- 🎨 Framer Motion animations for a smooth user experience
+- 📩 Newsletter section and tech tips
+
+---
+
+## 🛠️ Technologies Used
+
+- **React**
+- **React Router DOM**
+- **Tailwind CSS + DaisyUI**
+- **Framer Motion**
+- **Firebase Authentication**
+- **Axios**
+- **Swiper.js (for review slider)**
+
+---
+
+## 🔧 Environment Variables
+
+
