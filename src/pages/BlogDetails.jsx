@@ -73,13 +73,32 @@ const BlogDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
+      {/* Blog Information */}
       <div className="bg-white shadow-xl rounded-xl p-6 space-y-4">
-        <img src={blog.image} alt={blog.title} className="w-full rounded-xl" />
+        <img
+          src={blog.image}
+          alt={blog.title}
+          className="w-full rounded-xl object-cover"
+        />
         <h2 className="text-3xl font-bold">{blog.title}</h2>
-        <p className="text-sm text-gray-500">By {blog.author}</p>
+
+        {blog.shortDesc && (
+          <p className="text-gray-600 italic">"{blog.shortDesc}"</p>
+        )}
+
+        <p className="text-sm text-gray-500">
+          By {blog.author || 'Unknown Author'}
+        </p>
         <p className="text-gray-700">Category: {blog.category}</p>
-        <p className="text-gray-600">{new Date(blog.date).toLocaleString()}</p>
-        <p className="text-base text-gray-800">{blog.description}</p>
+        <p className="text-gray-600">
+          {blog.date
+            ? new Date(blog.date).toLocaleString()
+            : 'No publish date'}
+        </p>
+
+        <p className="text-base text-gray-800 whitespace-pre-line">
+          {blog.longDesc}
+        </p>
 
         {user && isBlogOwner && (
           <button
@@ -91,6 +110,7 @@ const BlogDetails = () => {
         )}
       </div>
 
+      {/* Comment Section */}
       <div className="bg-base-100 mt-10 p-6 rounded-xl shadow">
         <h3 className="text-xl font-semibold mb-4">Comments</h3>
 
@@ -98,7 +118,9 @@ const BlogDetails = () => {
           <p className="text-error">Please log in to comment.</p>
         ) : isBlogOwner ? (
           <div className="p-4 bg-yellow-100 text-yellow-800 rounded-lg">
-            <p><strong>Note:</strong> You cannot comment on your own blog.</p>
+            <p>
+              <strong>Note:</strong> You cannot comment on your own blog.
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -118,23 +140,28 @@ const BlogDetails = () => {
           </div>
         )}
 
+        {/* Display Comments */}
         <div className="mt-6 space-y-4">
-          {comments.map((c, i) => (
-            <div key={i} className="flex gap-4 items-start">
-              <img
-                src={c.photoURL}
-                alt={c.name}
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="font-semibold">{c.name}</p>
-                <p className="text-gray-700">{c.comment}</p>
-                <p className="text-xs text-gray-400">
-                  {new Date(c.date).toLocaleString()}
-                </p>
+          {comments.length === 0 ? (
+            <p className="text-gray-500">No comments yet.</p>
+          ) : (
+            comments.map((c, i) => (
+              <div key={i} className="flex gap-4 items-start">
+                <img
+                  src={c.photoURL || '/default-avatar.png'}
+                  alt={c.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div>
+                  <p className="font-semibold">{c.name}</p>
+                  <p className="text-gray-700">{c.comment}</p>
+                  <p className="text-xs text-gray-400">
+                    {new Date(c.date).toLocaleString()}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -164,7 +164,7 @@ const Home = () => {
                 <div>
                   <h3 className="text-lg font-bold">{blog.title}</h3>
                   <p className="text-sm text-gray-600 mt-1">
-                    {blog.description?.slice(0, 100) || 'No description'}...
+                    {blog.shortDesc?.slice(0, 100) || 'No description'}...
                   </p>
                 </div>
                 <div className="flex justify-between items-center mt-4">
