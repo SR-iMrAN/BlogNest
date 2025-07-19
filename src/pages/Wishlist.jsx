@@ -34,18 +34,18 @@ const Wishlist = () => {
   }, [user, axiosSecure]);
 
   // Remove item from wishlist
-  const handleRemove = async (wishlistId) => {
-    try {
-      const res = await axiosSecure.delete(`/wishlist/${wishlistId}`);
-      if (res.data.deletedCount > 0) {
-        setWishlist((prev) => prev.filter((item) => item.wishlistId !== wishlistId));
-        Swal.fire('Deleted!', 'Blog removed from wishlist.', 'success');
-      }
-    } catch (error) {
-      console.error('Delete error:', error);
-      Swal.fire('Error', 'Failed to remove from wishlist.', 'error');
+ const handleRemove = async (wishlistId) => {
+  try {
+    const res = await axiosSecure.delete(`/wishlist/${wishlistId}`);
+    if (res.data.deletedCount > 0) {
+      setWishlist((prev) => prev.filter((item) => item._id !== wishlistId));
+      Swal.fire('Deleted!', 'Blog removed from wishlist.', 'success');
     }
-  };
+  } catch (error) {
+    console.error('Delete error:', error);
+    Swal.fire('Error', 'Failed to remove from wishlist.', 'error');
+  }
+};
 
   // Table columns
   const columns = useMemo(() => [
