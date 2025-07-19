@@ -82,7 +82,7 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // ✅ Provide Auth Context
+  
   const authData = {
     user,
     loading,
