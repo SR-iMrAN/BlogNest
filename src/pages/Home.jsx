@@ -151,7 +151,7 @@ const Home = () => {
 
         {blogs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogs.map((blog, index) => (
+            {blogs.slice(0, 6).map((blog, index) => (
               <div
                 key={blog._id || index}
                 className="border p-4 rounded-xl shadow-md bg-white flex flex-col justify-between"

@@ -5,7 +5,8 @@ const Footer = () => {
     <footer className="bg-gray-100 text-gray-800 py-8 mt-12 border-t">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <h2 className="text-xl font-semibold text-blue-600 mb-2">BlogNest</h2>
+          <div className='flex gap-3 justify-center items-center'><div className='h-auto w-12'><img src="https://i.ibb.co/TD5R8z9R/Gemini-Generated-Image-iod9oiod9oiod9oi-removebg-preview-1.png" alt="" /></div>
+        <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link></div>
           <p className="text-sm text-gray-600">
             Where ideas hatch and inspire. Explore blogs, share stories, and connect with creative minds.
           </p>

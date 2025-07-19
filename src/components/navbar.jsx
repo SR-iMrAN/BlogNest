@@ -59,7 +59,8 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link>
+        <div className='flex gap-3 justify-center items-center'><div className='h-auto w-12'><img src="https://i.ibb.co/TD5R8z9R/Gemini-Generated-Image-iod9oiod9oiod9oi-removebg-preview-1.png" alt="" /></div>
+        <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link></div>
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks}
