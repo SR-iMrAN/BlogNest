@@ -57,7 +57,7 @@ Welcome to **Blog Nest**, a modern full-stack blogging platform frontend built u
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/yourusername/blog-nest-client.git
+git clone https://github.com/SR-iMrAN/BlogNest.git
 Navigate into the project directory:
 
 
