@@ -48,7 +48,7 @@ Welcome to **Blog Nest**, a modern full-stack blogging platform frontend built u
 - axios  
 - swiper  
 
-*(Check your package.json for exact versions and additional dependencies)*
+
 
 ---
 
