@@ -77,7 +77,7 @@ Open your browser:
 arduino
 Copy
 Edit
-http://localhost:3000
+http://localhost:3000 (Might be different in your case)
 ## 📁
 
     ███        ▄█    █▄       ▄████████ ███▄▄▄▄      ▄█   ▄█▄      ▄██   ▄    ▄██████▄  ███    █▄  
