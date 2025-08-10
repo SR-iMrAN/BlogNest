@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
 
         {/* Navigation Links */}
-        <div className="text-center md:text-left">
+        <div className="text-center ml-32 md:text-left">
           <h3 className="text-md font-semibold mb-4">Navigation</h3>
           <ul className="space-y-2 text-sm">
             <li>
@@ -67,7 +67,7 @@ const Footer = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="text-center md:text-left">
+        <div className="text-center ml-48 md:text-left">
           <h3 className="text-md font-semibold mb-4">Contact</h3>
           <ul className="text-sm text-gray-600 space-y-2">
             <li>Email: <a href="mailto:support@blognest.com" className="hover:underline">support@blognest.com</a></li>
