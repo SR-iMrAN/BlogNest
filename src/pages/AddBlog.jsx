@@ -54,7 +54,7 @@ const AddBlog = () => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-emerald-200 flex flex-col md:flex-row items-center justify-center px-4 py-10 gap-10"
+      className="min-h-screen bg-blue-300 flex flex-col md:flex-row items-center justify-center px-4 py-10 gap-10"
     >
       <div className="w-full md:w-1/2">
         <form

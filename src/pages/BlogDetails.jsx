@@ -73,6 +73,9 @@ const BlogDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
+      <p><Link to="/" className="btn btn-primary gap-2">
+                <FaHome /> Go Home
+              </Link></p>
       {/* Blog Information */}
       <div className="bg-white shadow-xl rounded-xl p-6 space-y-4">
         <img

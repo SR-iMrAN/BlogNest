@@ -29,20 +29,16 @@ const Navbar = () => {
       <NavLink to="/all-blogs" className={({ isActive }) => isActive ? activeLink : normalLink}>All Blogs</NavLink>
       <NavLink to="/wishlist" className={({ isActive }) => isActive ? activeLink : normalLink}>Wishlist</NavLink>
 
-      <div className="relative">
-        <button 
-          onClick={() => setDropdownOpen(!dropdownOpen)} 
-          className="flex items-center gap-1 hover:text-blue-600"
-        >
-          More <FiChevronDown size={14} />
-        </button>
-        {dropdownOpen && (
-          <div className="absolute top-full mt-2 bg-white shadow rounded w-40 text-gray-700 z-50">
-            <NavLink to="/add-blog" className="block px-4 py-2 hover:bg-gray-100">Add Blog</NavLink>
-            <NavLink to="/my-blogs" className="block px-4 py-2 hover:bg-gray-100">My Blogs</NavLink>
-          </div>
-        )}
-      </div>
+      <div className="dropdown dropdown-hover">
+  <label tabIndex={0} className="btn m-1">
+    More <FiChevronDown size={14} />
+  </label>
+  <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+    <li><NavLink to="/add-blog">Add Blog</NavLink></li>
+    <li><NavLink to="/featured">Featured</NavLink></li>
+  </ul>
+</div>
+
     </>
   );
 

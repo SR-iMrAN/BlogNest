@@ -3,7 +3,7 @@ import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/f
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-800 py-10  border-t">
+    <footer className="bg-gray-100 text-gray-800 py-10   border-t">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Logo & Description */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-4">
@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
 
         {/* Navigation Links */}
-        <div className="text-center ml-32 md:text-left">
+        <div className="text-center lg:ml-32 md:text-left">
           <h3 className="text-md font-semibold mb-4">Navigation</h3>
           <ul className="space-y-2 text-sm">
             <li>
@@ -67,7 +67,7 @@ const Footer = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="text-center ml-48 md:text-left">
+        <div className="text-center lg:ml-48 md:text-left">
           <h3 className="text-md font-semibold mb-4">Contact</h3>
           <ul className="text-sm text-gray-600 space-y-2">
             <li>Email: <a href="mailto:support@blognest.com" className="hover:underline">support@blognest.com</a></li>

@@ -9,7 +9,7 @@ const Errorpage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-      <div className="w-140 h-100">
+      <div className="w-220 h-100">
         <DotLottieReact
           src="https://lottie.host/27f6e196-2c94-4978-9677-03de9b3bb9f7/WcmozOVG8r.lottie"
           loop
