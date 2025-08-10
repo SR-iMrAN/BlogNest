@@ -296,7 +296,7 @@ const Home = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="bg-blue-50 py-22 px-4"
+        className="bg-blue-50 py-16  px-4"
       >
         <div className="text-center mb-10 max-w-3xl mx-auto">
           <h2 className="text-2xl font-semibold mb-2 flex justify-center items-center gap-2">
@@ -338,7 +338,7 @@ const Home = () => {
           >
             {[1, 2, 3, 4, 5].map((id) => (
               <SwiperSlide key={id}>
-                <div className="bg-white border rounded-lg p-6 shadow-md text-center h-full flex flex-col justify-between">
+                <div className="bg-white border rounded-lg p-6  shadow-md text-center h-full flex flex-col justify-between">
                   <p className="text-gray-700 italic mb-4">
                     “BlogNest is the perfect platform for sharing your thoughts. The UI is smooth, and it's fun to write again!”
                   </p>
