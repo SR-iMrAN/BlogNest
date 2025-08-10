@@ -11,22 +11,33 @@ import {
 } from '@tanstack/react-table';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
+import { Spiral } from 'ldrs/react';
+import 'ldrs/react/Spiral.css';
+
 const Wishlist = () => {
-  const { user, loading, axiosSecure } = useContext(AuthContext);
+  const { user, loading: authLoading, axiosSecure } = useContext(AuthContext);
 
   const [wishlist, setWishlist] = useState([]);
   const [sorting, setSorting] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   // Fetch wishlist with enriched blog data
   useEffect(() => {
     const fetchWishlist = async () => {
       if (user) {
+        setWishlistLoading(true);
         try {
           const res = await axiosSecure.get(`/wishlist?email=${user.email}`);
           setWishlist(res.data);
         } catch (error) {
           console.error('Failed to fetch wishlist:', error);
+          setWishlist([]);
+        } finally {
+          setWishlistLoading(false);
         }
+      } else {
+        setWishlist([]); // clear wishlist if no user
+        setWishlistLoading(false);
       }
     };
 
@@ -34,25 +45,44 @@ const Wishlist = () => {
   }, [user, axiosSecure]);
 
   // Remove item from wishlist
- const handleRemove = async (wishlistId) => {
-  try {
-    const res = await axiosSecure.delete(`/wishlist/${wishlistId}`);
-    if (res.data.deletedCount > 0) {
-      setWishlist((prev) => prev.filter((item) => item._id !== wishlistId));
-      Swal.fire('Deleted!', 'Blog removed from wishlist.', 'success');
+  const handleRemove = async (wishlistId) => {
+    try {
+      const res = await axiosSecure.delete(`/wishlist/${wishlistId}`);
+      if (res.data.deletedCount > 0) {
+        setWishlist((prev) => prev.filter((item) => item._id !== wishlistId));
+        Swal.fire('Deleted!', 'Blog removed from wishlist.', 'success');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      Swal.fire('Error', 'Failed to remove from wishlist.', 'error');
     }
-  } catch (error) {
-    console.error('Delete error:', error);
-    Swal.fire('Error', 'Failed to remove from wishlist.', 'error');
-  }
-};
+  };
 
-  // Table columns
+  // Table columns with separate Date and Time
   const columns = useMemo(() => [
     { header: 'Title', accessorKey: 'title' },
     { header: 'Author', accessorKey: 'author' },
     { header: 'Category', accessorKey: 'category' },
-    { header: 'Date', accessorKey: 'date' },
+    {
+      header: 'Date',
+      accessorKey: 'date',
+      cell: ({ getValue }) => {
+        const dateValue = getValue();
+        if (!dateValue) return '';
+        const d = new Date(dateValue);
+        return d.toLocaleDateString();  // date only
+      },
+    },
+    {
+      header: 'Time',
+      accessorKey: 'date',
+      cell: ({ getValue }) => {
+        const dateValue = getValue();
+        if (!dateValue) return '';
+        const d = new Date(dateValue);
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // time only
+      },
+    },
     {
       header: 'Actions',
       accessorKey: 'wishlistId',
@@ -70,7 +100,7 @@ const Wishlist = () => {
         </div>
       ),
     },
-  ], []);
+  ], [handleRemove]);
 
   // Create table instance
   const table = useReactTable({
@@ -82,10 +112,12 @@ const Wishlist = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (loading) {
+  // Show Spiral loading spinner
+  if (authLoading || wishlistLoading) {
     return (
-      <div className="text-center mt-10 text-gray-600 text-lg">
-        Loading... <span className="loading loading-ring loading-lg"></span>
+      <div className="text-center mt-10 text-gray-600 text-lg flex flex-col items-center gap-2">
+        Loading...
+        <Spiral size="40" speed="0.9" color="black" />
       </div>
     );
   }
@@ -118,7 +150,7 @@ const Wishlist = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 ">
       <h2 className="text-3xl font-bold mb-6 text-center">Your Wishlist</h2>
       <div className="overflow-x-auto">
         <table className="table w-full border border-gray-300">

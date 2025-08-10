@@ -10,26 +10,44 @@ const BlogDetails = () => {
   const [blog, setBlog] = useState(null);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const isBlogOwner = user && blog?.userEmail === user.email;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const blogRes = await axiosSecure.get(`/blogs/${id}`);
-        setBlog(blogRes.data);
+ useEffect(() => {
+  let timer;
+  const fetchData = async () => {
+    setLoading(true);
+    const start = Date.now();
 
-        const commentRes = await axiosSecure.get(`/comments?blogId=${id}`);
-        setComments(commentRes.data);
-      } catch (error) {
-        console.error('Error loading data:', error);
-        toast.error('Failed to load blog or comments');
+    try {
+      const blogRes = await axiosSecure.get(`/blogs/${id}`);
+      setBlog(blogRes.data);
+
+      const commentRes = await axiosSecure.get(`/comments?blogId=${id}`);
+      setComments(commentRes.data);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      toast.error('Failed to load blog or comments');
+      setBlog(null);
+    } finally {
+      const elapsed = Date.now() - start;
+      const delay = 10; 
+
+      if (elapsed < delay) {
+        timer = setTimeout(() => setLoading(false), delay - elapsed);
+      } else {
+        setLoading(false);
       }
-    };
+    }
+  };
 
-    fetchData();
-  }, [axiosSecure, id]);
+  fetchData();
+
+  return () => clearTimeout(timer);
+}, [axiosSecure, id]);
+
 
   const handleComment = async () => {
     if (!comment.trim()) {
@@ -59,11 +77,18 @@ const BlogDetails = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center mt-10">
+        <span className="loading loading-ring loading-xl"></span>
+      </div>
+    );
+  }
+
   if (!blog) {
     return (
       <div className="text-center mt-10">
-        <span className="loading loading-ring loading-lg"></span>
-        <p className="text-gray-500 mt-4 mb-4">No blogs found.</p>
+        <p className="text-gray-500 mb-4">No blog found.</p>
         <Link to="/" className="btn btn-primary gap-2">
           <FaHome /> Go Home
         </Link>
@@ -73,9 +98,12 @@ const BlogDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <p><Link to="/" className="btn btn-primary gap-2">
-                <FaHome /> Go Home
-              </Link></p>
+      <p>
+        <Link to="/" className="btn btn-primary gap-2">
+          <FaHome /> Go Home
+        </Link>
+      </p>
+
       {/* Blog Information */}
       <div className="bg-white shadow-xl rounded-xl p-6 space-y-4">
         <img
@@ -90,13 +118,11 @@ const BlogDetails = () => {
         )}
 
         <p className="text-sm text-gray-500">
-          By {blog.author || 'Unknown Author'}
+          By {blog.author || 'Anonymous Author'}
         </p>
         <p className="text-gray-700">Category: {blog.category}</p>
         <p className="text-gray-600">
-          {blog.date
-            ? new Date(blog.date).toLocaleString()
-            : 'No publish date'}
+          {blog.date ? new Date(blog.date).toLocaleString() : 'No publish date'}
         </p>
 
         <p className="text-base text-gray-800 whitespace-pre-line">

@@ -55,7 +55,10 @@ const AllBlogs = () => {
     const wishItem = {
       blogId: blog._id,
       title: blog.title,
+      author: blog.author || 'Anonymous',
       image: blog.image,
+        category: blog.category,
+         date: blog.date || new Date().toISOString(),
       userEmail: user.email
     };
 

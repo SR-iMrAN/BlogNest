@@ -83,7 +83,7 @@ const Home = () => {
           userEmail: user.email,
           blogId: blog._id,
           title: blog.title,
-          author: blog.author || 'Unknown',
+          author: blog.author || 'Anonymous',
           category: blog.category || 'Uncategorized',
           date: blog.date || new Date().toISOString(),
           image: blog.image || '',

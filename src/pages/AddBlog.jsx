@@ -26,12 +26,16 @@ const AddBlog = () => {
         toast.error("You must be logged in to add a blog.");
         return;
       }
-
+ const blogData = {
+      ...data,
+      userEmail: user.email,
+      author: user.displayName || "Anonymous",
+    };
       // Get Firebase ID token
       const token = await user.getIdToken();
 
       // Send POST request to backend
-      const response = await axios.post("https://blog-nest-server-two.vercel.app/blogs", data, {
+      const response = await axios.post("https://blog-nest-server-two.vercel.app/blogs", blogData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
