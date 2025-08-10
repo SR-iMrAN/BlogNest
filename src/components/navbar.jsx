@@ -1,78 +1,76 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useState, useContext } from 'react';
-import { FiMenu, FiX, FiLogIn, FiUserPlus, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiLogIn, FiUserPlus, FiLogOut, FiChevronDown } from 'react-icons/fi';
 import { AuthContext } from '../provider/AuthProvider';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logOut } = useContext(AuthContext);
 
   const handleLogout = () => {
-    logOut().then(() => {}).catch(() => {});
+    logOut().catch(() => {});
   };
 
-  const navLinks = (
+  const activeLink = 'text-blue-600 font-semibold border-b-2 border-blue-600 pb-1';
+  const normalLink = 'hover:text-blue-600';
+
+  const loggedOutLinks = (
     <>
-      <NavLink
-        to="/"
-        className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
-        }
-      >
-        Home
-      </NavLink>
-      <NavLink
-        to="/add-blog"
-        className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
-        }
-      >
-        Add Blog
-      </NavLink>
-      <NavLink
-        to="/all-blogs"
-        className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
-        }
-      >
-        All Blogs
-      </NavLink>
-      <NavLink
-        to="/featured"
-        className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
-        }
-      >
-        Featured
-      </NavLink>
-      <NavLink
-        to="/wishlist"
-        className={({ isActive }) =>
-          isActive ? 'text-blue-600 font-semibold border-b-2 border-blue-600' : 'hover:text-blue-600'
-        }
-      >
-        Wishlist
-      </NavLink>
+      <NavLink to="/" className={({ isActive }) => isActive ? activeLink : normalLink}>Home</NavLink>
+      <NavLink to="/all-blogs" className={({ isActive }) => isActive ? activeLink : normalLink}>All Blogs</NavLink>
+      <NavLink to="/featured" className={({ isActive }) => isActive ? activeLink : normalLink}>Featured</NavLink>
+    </>
+  );
+
+  const loggedInLinks = (
+    <>
+      <NavLink to="/" className={({ isActive }) => isActive ? activeLink : normalLink}>Home</NavLink>
+      <NavLink to="/all-blogs" className={({ isActive }) => isActive ? activeLink : normalLink}>All Blogs</NavLink>
+      <NavLink to="/wishlist" className={({ isActive }) => isActive ? activeLink : normalLink}>Wishlist</NavLink>
+
+      <div className="relative">
+        <button 
+          onClick={() => setDropdownOpen(!dropdownOpen)} 
+          className="flex items-center gap-1 hover:text-blue-600"
+        >
+          More <FiChevronDown size={14} />
+        </button>
+        {dropdownOpen && (
+          <div className="absolute top-full mt-2 bg-white shadow rounded w-40 text-gray-700 z-50">
+            <NavLink to="/add-blog" className="block px-4 py-2 hover:bg-gray-100">Add Blog</NavLink>
+            <NavLink to="/my-blogs" className="block px-4 py-2 hover:bg-gray-100">My Blogs</NavLink>
+          </div>
+        )}
+      </div>
     </>
   );
 
   return (
     <nav className="bg-white shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className='flex gap-3 justify-center items-center'><div className='h-auto w-12'><img src="https://i.ibb.co/TD5R8z9R/Gemini-Generated-Image-iod9oiod9oiod9oi-removebg-preview-1.png" alt="" /></div>
-        <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link></div>
-
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks}
+        
+        {/* Logo */}
+        <div className='flex items-center gap-3'>
+          <div className='w-12 h-auto'>
+            <img src="https://i.ibb.co/TD5R8z9R/Gemini-Generated-Image-iod9oiod9oiod9oi-removebg-preview-1.png" alt="Logo" />
+          </div>
+          <Link to="/" className="text-xl font-bold text-blue-700">BlogNest</Link>
         </div>
 
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-8">
+          {user ? loggedInLinks : loggedOutLinks}
+        </div>
+
+        {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-4">
           {user ? (
             <>
               <img
                 src={user.photoURL || 'https://i.ibb.co/8d8hKt3/default-avatar.png'}
                 alt="Profile"
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full border border-blue-500"
               />
               <button
                 onClick={handleLogout}
@@ -102,6 +100,7 @@ const Navbar = () => {
           )}
         </div>
 
+        {/* Mobile Menu Button */}
         <div className="md:hidden">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -109,16 +108,19 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden px-4 pb-4 flex flex-col gap-3 bg-white shadow">
-          <div className="flex flex-col gap-2">{navLinks}</div>
+          <div className="flex flex-col gap-2">
+            {user ? loggedInLinks : loggedOutLinks}
+          </div>
 
           {user ? (
             <div className="flex items-center gap-2 mt-3">
               <img
                 src={user.photoURL || 'https://i.ibb.co/8d8hKt3/default-avatar.png'}
                 alt="Profile"
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full border border-blue-500"
               />
               <button
                 onClick={handleLogout}
